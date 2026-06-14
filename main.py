@@ -20,13 +20,13 @@ def train_cnn(training_df, test_df, params):
     """Trains and evaluates CNN on the given train and test data, respectively."""
 
     print("Training is starting ...")
-    train_images = training_df.ix[:, 2:].as_matrix()  
-    train_labels = training_df.ix[:, 0]    
-    train_prices = training_df.ix[: ,1]
+    train_images = training_df.iloc[:, 2:].values
+    train_labels = training_df.iloc[:, 0]
+    train_prices = training_df.iloc[:, 1]
 
-    test_images = test_df.ix[:, 2:].as_matrix()   
-    test_labels = test_df.ix[:, 0]   
-    test_prices = test_df.ix[:, 1]
+    test_images = test_df.iloc[:, 2:].values
+    test_labels = test_df.iloc[:, 0]
+    test_prices = test_df.iloc[:, 1]
 
 
     test_labels = keras.utils.to_categorical(test_labels, params["num_classes"])
@@ -115,13 +115,12 @@ l2_new = pd.DataFrame()
 for idx, row in train_df.iterrows():
     if row[0] == 1:
         for i in range(l0_l1_ratio):
-            l1_new = l1_new.append(row)
+            l1_new = pd.concat([l1_new, pd.DataFrame([row])], ignore_index=True)
     if row[0] == 2:
         for i in range(l0_l2_ratio):
-            l2_new = l2_new.append(row)
+            l2_new = pd.concat([l2_new, pd.DataFrame([row])], ignore_index=True)
 
-train_df = train_df.append(l1_new)
-train_df = train_df.append(l2_new)
+train_df = pd.concat([train_df, l1_new, l2_new], ignore_index=True)
 
 # shuffle
 train_df = shuffle(train_df)
