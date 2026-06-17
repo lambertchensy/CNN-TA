@@ -13,6 +13,48 @@
 5. 但是我实际验证的结果很有意思。 data/1~7 并不是不同时间窗口的滚动训练结果 ——它们使用的是完全相同的训练和测试数据：
     而且准确率都在百分65上下。所有文件夹的训练/测试数据行数、价格范围完全一致，只是准确率不同（61% 66%）。
     这说明 **data/1 7 是同一数据的不同CNN运行结果**（不同随机种子），不是不同时间窗口的滚动训练。
+6. 1到7的样本外标签胜率统计如下：
+    data/1: test_samples=1244, accuracy=0.6543, train_rows=2517, test_rows=1260, train_price_range=[14.24, 10.74], test_price_range=[19.72, 14.31]
+    data/2: test_samples=1244, accuracy=0.6174, train_rows=2517, test_rows=1260, train_price_range=[14.24, 10.74], test_price_range=[19.72, 14.31]
+    data/3: test_samples=1244, accuracy=0.6624, train_rows=2517, test_rows=1260, train_price_range=[14.24, 10.74], test_price_range=[19.72, 14.31]
+    data/4: test_samples=1244, accuracy=0.6222, train_rows=2517, test_rows=1260, train_price_range=[14.24, 10.74], test_price_range=[19.72, 14.31]
+    data/5: cnn_result.csv not found, skipping
+    data/6: test_samples=1244, accuracy=0.6576, train_rows=2517, test_rows=1260, train_price_range=[14.24, 10.74], test_price_range=[19.72, 14.31]
+    data/7: test_samples=1244, accuracy=0.6399, train_rows=2517, test_rows=1260, train_price_range=[14.24, 10.74], test_price_range=[19.72, 14.31]
+
+    === Combined Out-of-Sample Results ===
+    Total samples: 7464
+    Overall accuracy: 0.6423
+    Prediction distribution:
+    prediction
+    0    4400
+    1    1274
+    2    1790
+    Name: count, dtype: int64
+    Label distribution:
+    test_label
+    0    6564
+    1     450
+    2     450
+    Name: count, dtype: int64
+
+    Per-window accuracy:
+      Window 1: 1244 samples, accuracy=0.6543
+      Window 2: 1244 samples, accuracy=0.6174
+      Window 3: 1244 samples, accuracy=0.6624
+      Window 4: 1244 samples, accuracy=0.6222
+      Window 5: 0 samples, accuracy=nan
+      Window 6: 1244 samples, accuracy=0.6576
+      Window 7: 1244 samples, accuracy=0.6399
+7. 作者的1-7文件夹下的预测结果确实用的是DL4J（Java)框架训练的，Sep 23, 2019 上传到git上的。
+    main.py脚本是作者Dec 16, 2020 新增的python版的训练脚本。
+    作者用DL4J训练CNN的代码（Phase3/4）是 私有的，从未公开 。data/1~7的cnn_result.csv是用那个未公开的DL4J代码生成的。
+    main.py是作者后来（2020年12月）用Keras重写的Python版，但 Python版无法完全复现DL4J的结果 ，因为：
+
+    - DL4J和Keras/TensorFlow的权重初始化不同
+    - Adadelta优化器的实现有微妙差异
+    - 作者DL4J代码中的过采样/类别权重策略未知
+    所以， 你无法通过调参让Python版完全匹配作者的65%准确率 ，因为缺失的DL4J训练代码中的关键细节（网络超参数、训练策略、是否用了class_weight等）都无从得知。
 
 【实践测试】
 1. 样本外预测标签的准确率基本在百分11或者12左右(每次运行的差别不大)，分析如下数据可知，主要是Hold(0)预测出错的太多了。
