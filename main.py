@@ -101,11 +101,12 @@ l2_train = train_df.loc[train_df[0] == 2]
 l0_size = l0_train.shape[0]
 l1_size = l1_train.shape[0]
 l2_size = l2_train.shape[0]
-#l0_l1_ratio = int((l0_size//l1_size)/4)
-#l0_l2_ratio = int((l0_size//l2_size)/4)
 
-l0_l1_ratio = (l0_size//l1_size)
-l0_l2_ratio = (l0_size//l2_size)
+# 过采样比率调节
+ratio = 0.65   # 范围参考0.5-1之间：实测0.25太少，1太多
+
+l0_l1_ratio = int((l0_size//l1_size)*ratio)
+l0_l2_ratio = int((l0_size//l2_size)*ratio)
 print("Before")
 print("l0_size:",l0_size,"l1_size:", l1_size,"l2_size:",l2_size)
 print("l0_l1_ratio:",l0_l1_ratio,"l0_l2_ratio:", l0_l2_ratio)
@@ -132,11 +133,9 @@ l2_train = train_df.loc[train_df[0] == 2]
 l0_size = l0_train.shape[0]
 l1_size = l1_train.shape[0]
 l2_size = l2_train.shape[0]
-#l0_l1_ratio = int((l0_size//l1_size)/4)
-#l0_l2_ratio = int((l0_size//l2_size)/4)
 
-l0_l1_ratio = (l0_size//l1_size)
-l0_l2_ratio = (l0_size//l2_size)
+l0_l1_ratio = int((l0_size//l1_size)*ratio)
+l0_l2_ratio = int((l0_size//l2_size)*ratio)
 print("After")
 print("l0_size:",l0_size,"l1_size:", l1_size,"l2_size:",l2_size)
 print("l0_l1_ratio:",l0_l1_ratio,"l0_l2_ratio:", l0_l2_ratio)
